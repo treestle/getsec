@@ -56,7 +56,7 @@ var sidebar = sidebars.Sidebar({
   url: "./sidebar.html"
 });
 
-/*var anchorMod = pageMod.PageMod({
+var anchorMod = pageMod.PageMod({
   include: ['*'],
   contentScriptFile: "./anchor-mod.js",
   contentScriptWhen: "start",
@@ -64,14 +64,15 @@ var sidebar = sidebars.Sidebar({
   onAttach: function(worker) {
     worker.port.on("validate", function(data) {
       console.log("RECEIVE: " + data.url);
-      var status = checkUrl(data.url);
-      worker.port.emit("enhance", {
-        id: data.id,
-        status: status
+      validate(data.url, function() {
+        worker.port.emit("enhance", {
+          id: data.id,
+          status: status
+        });
       });
     });
   }
-}); */
+});
 
 function handleClick(state) {
   if(state.checked)
@@ -104,7 +105,7 @@ function checkUrl(url) {
   return Math.floor((Math.random() * 3));
 }
 
-function validate(url, callback) {
+function validate(url, callback, args = {}) {
   var py_validate = child_process.spawn('/usr/bin/python' , ['/home/corrupted/Projects/firefox_ext/addon-sdk-1.17/dnssec_ext/data/bin/main.py', '-v', url]);
   py_validate.stdout.on('data', function (data) {
     console.log(data);
