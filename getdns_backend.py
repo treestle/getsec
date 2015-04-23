@@ -140,44 +140,47 @@ def lookup(url,protocol=None,port=None):
     #excutive getdns function
     try:
         results = ctx.address(name=url, extensions=extensions)
+        #extract dnssec result
+        dnssec_result = []
+
+        result_status = {
+            400: 2, #DNSSEC_SECURE
+            401: 0, #DNSSEC_BOGUS
+            402: 1, #DNSSEC_INDETERINATE
+            403: 1, #DNSSEC_INSECURE
+        }
+
+        for result in results.replies_tree:
+            dnssec_result.append(result_status[result.get("dnssec_status")])
+
+        avg_result = float(sum(dnssec_result))/(float(len(dnssec_result)) or 1.0)
+
+        lookup_result["dnssec_status"] = avg_result
+
+        #extract ip address
+
+        ipv4_list = []
+        ipv6_list = []
+
+        if results.status == getdns.RESPSTATUS_GOOD:
+            for addr in results.just_address_answers:
+                if addr["address_type"] == "IPv6":
+                    ipv6_list.append(addr["address_data"])
+                elif addr["address_type"] == "IPv4":
+                    ipv4_list.append(addr["address_data"])
+        else:
+            print("{0}: getdns.address() returned error: {1}".format(url, result.status))
+
+        lookup_result["IPv4"] = ipv4_list
+        lookup_result["IPv6"] = ipv6_list
+
+        return lookup_result
+
     except getdns.error as e:
         print("Error on excutive getdns function:{0}".format(e))
+        return lookup_result
 
-    #extract dnssec result
-    dnssec_result = []
 
-    result_status = {
-        400: 2, #DNSSEC_SECURE
-        401: 0, #DNSSEC_BOGUS
-        402: 1, #DNSSEC_INDETERINATE
-        403: 1, #DNSSEC_INSECURE
-    }
-
-    for result in results.replies_tree:
-        dnssec_result.append(result_status[result.get("dnssec_status")])
-
-    avg_result = float(sum(dnssec_result))/(float(len(dnssec_result)) or 1.0)
-
-    lookup_result["dnssec_status"] = avg_result
-
-    #extract ip address
-
-    ipv4_list = []
-    ipv6_list = []
-
-    if results.status == getdns.RESPSTATUS_GOOD:
-        for addr in results.just_address_answers:
-            if addr["address_type"] == "IPv6":
-                ipv6_list.append(addr["address_data"])
-            elif addr["address_type"] == "IPv4":
-                ipv4_list.append(addr["address_data"])
-    else:
-        print("{0}: getdns.address() returned error: {1}".format(url, result.status))
-
-    lookup_result["IPv4"] = ipv4_list
-    lookup_result["IPv6"] = ipv6_list
-
-    return lookup_result
 
 def main():
     urllist = [
