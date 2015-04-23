@@ -24,8 +24,7 @@ const icons = {
     }
 };
 
-tabs.on('activate', onTabReady);
-tabs.on('pageshow', onTabReady);
+tabs.on('ready', onTabReady);
 
 var button = buttons.ToggleButton({
   id: "mozilla-link",
@@ -56,7 +55,7 @@ var sidebar = sidebars.Sidebar({
   url: "./sidebar.html"
 });
 
-var anchorMod = pageMod.PageMod({
+/*var anchorMod = pageMod.PageMod({
   include: ['*'],
   contentScriptFile: "./anchor-mod.js",
   contentScriptWhen: "start",
@@ -64,15 +63,14 @@ var anchorMod = pageMod.PageMod({
   onAttach: function(worker) {
     worker.port.on("validate", function(data) {
       console.log("RECEIVE: " + data.url);
-      validate(data.url, function() {
-        worker.port.emit("enhance", {
-          id: data.id,
-          status: status
-        });
+      var status = checkUrl(data.url);
+      worker.port.emit("enhance", {
+        id: data.id,
+        status: status
       });
     });
   }
-});
+}); */
 
 function handleClick(state) {
   if(state.checked)
@@ -85,16 +83,15 @@ function onTabReady(tab) {
 
 function tab_ready_callback(data) {
   var status = Math.floor(data["dnssec_status"]);
-  console.log(data["dnssec_status"]);
   switch(status) {
     case 0:
-      button.icon = icons.ugly;
+      button.icon = icons.good;
       break;
     case 1:
       button.icon = icons.bad;
       break;
     case 2:
-      button.icon = icons.good;
+      button.icon = icons.ugly;
       break;
   }
 }
@@ -105,7 +102,7 @@ function checkUrl(url) {
   return Math.floor((Math.random() * 3));
 }
 
-function validate(url, callback, args = {}) {
+function validate(url, callback) {
   var py_validate = child_process.spawn('/usr/bin/python' , ['/home/corrupted/Projects/firefox_ext/addon-sdk-1.17/dnssec_ext/data/bin/main.py', '-v', url]);
   py_validate.stdout.on('data', function (data) {
     console.log(data);
