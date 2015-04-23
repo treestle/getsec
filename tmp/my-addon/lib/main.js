@@ -3,6 +3,7 @@ var panels = require("sdk/panel");
 var tabs = require("sdk/tabs");
 var sidebars = require("sdk/ui/sidebar");
 var pageMod = require("sdk/page-mod");
+var child_process = require("sdk/system/child_process");
 var status = 1;
 
 const icons = {
@@ -54,7 +55,7 @@ var sidebar = sidebars.Sidebar({
   url: "./sidebar.html"
 });
 
-var anchorMod = pageMod.PageMod({
+/*var anchorMod = pageMod.PageMod({
   include: ['*'],
   contentScriptFile: "./anchor-mod.js",
   contentScriptWhen: "start",
@@ -69,7 +70,7 @@ var anchorMod = pageMod.PageMod({
       });
     });
   }
-});
+}); */
 
 function handleClick(state) {
   if(state.checked)
@@ -77,7 +78,11 @@ function handleClick(state) {
 }
 
 function onTabReady(tab) {
-  status = checkUrl(tab.url);
+  validate(tab.url, tab_ready_callback);
+}
+
+function tab_ready_callback(data) {
+  var status = Math.floor(data["dnssec_status"]);
   switch(status) {
     case 0:
       button.icon = icons.good;
@@ -91,10 +96,20 @@ function onTabReady(tab) {
   }
 }
 
+
 function checkUrl(url) {
   console.log(url);
   return Math.floor((Math.random() * 3));
 }
+
+function validate(url, callback) {
+  var py_validate = child_process.spawn('/usr/bin/python' , ['/home/corrupted/Projects/firefox_ext/addon-sdk-1.17/dnssec_ext/data/bin/main.py', '-v', url]);
+  py_validate.stdout.on('data', function (data) {
+    console.log(data);
+    callback(JSON.parse(data));
+  });
+}
+
 
 function handleHide() {
   button.state('window', {checked: false});

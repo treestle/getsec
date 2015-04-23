@@ -14,7 +14,8 @@ def getdns_lookup_ip(hostname):
     try:
         results = ctx.address(name=hostname, extensions=extensions)
     except getdns.error as e:
-        print("Error on looking IP:{0}".format(e))
+        pass
+        #print("Error on looking IP:{0}".format(e))
 
     status = results.status
 
@@ -29,7 +30,8 @@ def getdns_lookup_ip(hostname):
                 ipv4_list.append(addr["address_data"])
         return {"IPv4":ipv4_list,"IPv6":ipv6_list}
     else:
-        print("{0}: getdns.address() returned error: {1}".format(hostname, status))
+        pass
+        #print("{0}: getdns.address() returned error: {1}".format(hostname, status))
 
 def getdns_dnssec_validate(hostname):
 
@@ -43,7 +45,8 @@ def getdns_dnssec_validate(hostname):
     try:
         results = ctx.address(name=hostname, extensions=extensions)
     except getdns.error as e:
-        print("Error on extracting DNSSEC validation:{0}".format(e))
+        pass
+        #print("Error on extracting DNSSEC validation:{0}".format(e))
 
     dnssec_result = []
 
@@ -123,7 +126,8 @@ def getdns_tlsa_record(hostname, protocol="tcp", port=443):
         return tlsa_record_list
 
     except getdns.error as e:
-        print("Extracting TLSA record error:{0}".format(e))
+        pass
+        #print("Extracting TLSA record error:{0}".format(e))
 
 def lookup(url,protocol=None,port=None):
 
@@ -169,7 +173,8 @@ def lookup(url,protocol=None,port=None):
                 elif addr["address_type"] == "IPv4":
                     ipv4_list.append(addr["address_data"])
         else:
-            print("{0}: getdns.address() returned error: {1}".format(url, results.status))
+            pass
+            #print("{0}: getdns.address() returned error: {1}".format(url, results.status))
 
         lookup_result["IPv4"] = ipv4_list
         lookup_result["IPv6"] = ipv6_list
@@ -177,7 +182,7 @@ def lookup(url,protocol=None,port=None):
         return lookup_result
 
     except getdns.error as e:
-        print("Error on excutive getdns function:{0}".format(e))
+        #print("Error on excutive getdns function:{0}".format(e))
         return lookup_result
 
 
