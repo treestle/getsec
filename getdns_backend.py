@@ -156,7 +156,7 @@ def lookup(url,protocol=None,port=None):
     for result in results.replies_tree:
         dnssec_result.append(result_status[result.get("dnssec_status")])
 
-    avg_result = float(sum(dnssec_result))/float(len(dnssec_result))
+    avg_result = float(sum(dnssec_result))/(float(len(dnssec_result)) or 1.0)
 
     lookup_result["dnssec_status"] = avg_result
 
