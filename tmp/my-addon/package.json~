@@ -1,0 +1,25 @@
+{
+  "name": "my-addon",
+  "title": "my-addon",
+  "id": "jid1-fQD7owqoQ8cKDA",
+  "description": "<a href=\"google.com\">click</a> a basic add-on",
+  "author": "",
+  "license": "MPL 2.0",
+  "version": "0.1",
+  "preferences": [{
+    "name": "testInt",
+    "type": "integer",
+    "title": "Test Integer",
+    "value": "42"
+  },{
+    "name": "testBool",
+    "type": "bool",
+    "title": "Test Boolean",
+    "value": "true"
+  },{
+    "name": "testString",
+    "type": "string",
+    "title": "Test String",
+    "value": "CULOCACCA"
+  }]
+}

@@ -1,0 +1,15 @@
+<html>
+<head>
+<title>TITOLO CULO</title>
+</head>
+
+<body onload="ciao()">
+<p id="test">POPUP CONTENT</p>
+</body>
+
+<script>
+  function ciao() {
+    document.getElementById("test").innerHTML = window.arguments.cacca;
+  }
+</script>
+</html>

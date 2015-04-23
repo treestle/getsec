@@ -1,0 +1,37 @@
+.getsec-icon {
+  position: relative;
+  display: none;
+  right: -2px;
+  top: -15px;
+  max-height: 0px;
+  max-width: 0px;
+  
+}
+
+.getsec-icon div {
+  width: 15px;
+  height: 15px;
+  background-color: black;
+  position: absolute;
+}
+
+.getsec-icon .getsec-icon-0 {
+  background-color: green;
+}
+
+.getsec-icon .getsec-icon-1 {
+  background-color: yellow;
+}
+
+.getsec-icon .getsec-icon-2 {
+  background-color: red;
+}
+
+a:hover .getsec-icon {
+  display: inline-block;
+}
+
+/*#res #search h3 .getsec-icon {
+  position: absolute;
+  top: 0px;
+}*/
