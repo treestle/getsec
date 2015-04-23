@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import getdns, base64, binascii
+import getdns, binascii
 
 def getdns_version():
     return getdns.__version__
@@ -13,8 +13,8 @@ def getdns_lookup_ip(hostname):
 
     try:
         results = ctx.address(name=hostname, extensions=extensions)
-    except getdns.error, e:
-        print(str(e))
+    except getdns.error as e:
+        print("Error on looking IP:{0}".format(e))
 
     status = results.status
 
@@ -29,7 +29,7 @@ def getdns_lookup_ip(hostname):
                 ipv4_list.append(addr["address_data"])
         return {"IPv4":ipv4_list,"IPv6":ipv6_list}
     else:
-        print "%s: getdns.address() returned error: %d" % (hostname, status)
+        print("{0}: getdns.address() returned error: {1}".format(hostname, status))
 
 def getdns_dnssec_validate(hostname):
 
@@ -42,8 +42,8 @@ def getdns_dnssec_validate(hostname):
 
     try:
         results = ctx.address(name=hostname, extensions=extensions)
-    except getdns.error, e:
-        print(str(e))
+    except getdns.error as e:
+        print("Error on extracting DNSSEC validation:{0}".format(e))
 
     dnssec_result = []
 
@@ -68,10 +68,66 @@ def getdns_dnssec_validate(hostname):
     else:
         return False
 
+def getdns_tlsa_record(hostname, protocol="tcp", port=443):
+    """
+    qname = "_443._tcp.fedoraproject.org"
+
+    This qname is for testing to match TLSA record, here is a dig example:
+    _443._tcp.fedoraproject.org. 300 IN	TLSA	0 0 1 19400BE5B7A31FB733917700789D2F0A2471C0C9D506C0E504C06C16 D7CB17C0
+
+    """
+
+    qname = "_{0}._{1}.{2}".format(str(int(port)), str(protocol), str(hostname))
+    qtype = getdns.RRTYPE_TLSA
+
+    ctx = getdns.Context()
+
+    extensions = {
+        "dnssec_return_only_secure": getdns.EXTENSION_TRUE
+    }
+
+    results = ctx.general(
+        name = qname,
+        request_type = qtype,
+        extensions = extensions
+    )
+
+    # print(dir(results))
+    # print("\n")
+
+    tlsa_record_list = []
+
+    try:
+        results.status == getdns.RESPSTATUS_GOOD
+        replies_tree = results.replies_tree
+
+        for a in replies_tree:
+            for b in a.get("answer"):
+                d = b.get("rdata")
+                if d:
+                    # print(d)
+                    # print("\n")
+
+                    cdata = d.get("certificate_association_data")
+                    if cdata:
+                        tlsa_record = {}
+                        #putting data in dict
+                        tlsa_record["certificate_usage"] = d.get("certificate_usage")
+                        tlsa_record["selector"] = d.get("selector")
+                        tlsa_record["matching_type"] = d.get("matching_type")
+                        tlsa_record["certificate_association_data"] = binascii.b2a_hex(cdata)
+
+                        #Put dict into list
+                        tlsa_record_list.append(tlsa_record)
+
+        return tlsa_record_list
+
+    except getdns.error as e:
+        print("Extracting TLSA record error:{0}".format(e))
+
 def lookup(url,protocol=None,port=None):
 
     lookup_result={"url":url}
-
 
     #initial getdns
     ctx = getdns.Context()
@@ -84,8 +140,8 @@ def lookup(url,protocol=None,port=None):
     #excutive getdns function
     try:
         results = ctx.address(name=url, extensions=extensions)
-    except getdns.error, e:
-        print(str(e))
+    except getdns.error as e:
+        print("Error on excutive getdns function:{0}".format(e))
 
     #extract dnssec result
     dnssec_result = []
@@ -116,7 +172,7 @@ def lookup(url,protocol=None,port=None):
             elif addr["address_type"] == "IPv4":
                 ipv4_list.append(addr["address_data"])
     else:
-        print("%s: getdns.address() returned error: %d") % (hostname, status)
+        print("{0}: getdns.address() returned error: {1}".format(url, result.status))
 
     lookup_result["IPv4"] = ipv4_list
     lookup_result["IPv6"] = ipv6_list
@@ -141,49 +197,11 @@ def main():
     for node in result:
         print(node)
 
-def getdns_tlsa_record(hostname, protocol="tcp", port=443):
-    """
-    qname = "_443._tcp.fedoraproject.org"
-
-    This qname is for testing to match TLSA record, should be like this:
-    _443._tcp.fedoraproject.org. 300 IN	TLSA	0 0 1 19400BE5B7A31FB733917700789D2F0A2471C0C9D506C0E504C06C16 D7CB17C0
-
-    """
-
-    qname = "_{0}._{1}.{2}".format(str(int(port)), str(protocol), str(hostname))
-    qtype = getdns.RRTYPE_TLSA
-
-    ctx = getdns.Context()
-
-    extensions = {
-        "dnssec_return_only_secure": getdns.EXTENSION_TRUE
-    }
-
-    results = ctx.general(
-        name = qname,
-        request_type = qtype,
-        extensions = extensions
-    )
-
-    # print(dir(results))
-    # print("\n")
-
-    replies_tree = results.replies_tree
-    for a in replies_tree:
-        for b in a.get("answer"):
-            d = b.get("rdata")
-            if d:
-                cdata = d.get("certificate_association_data")
-                if cdata:
-                    print(binascii.b2a_hex(cdata))
-
-    if results.status == getdns.RESPSTATUS_GOOD:
-        # print(results.replies_tree)
-        pass
-
 if __name__ == "__main__":
     print("getdns version:"+getdns_version()+"\n")
-    getdns_tlsa_record("fedoraproject.org", "tcp", 443)
+    # main()
+    # print("\n")
+    print(getdns_tlsa_record("fedoraproject.org", "tcp", 443))
 
 
 
