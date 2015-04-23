@@ -169,7 +169,7 @@ def lookup(url,protocol=None,port=None):
                 elif addr["address_type"] == "IPv4":
                     ipv4_list.append(addr["address_data"])
         else:
-            print("{0}: getdns.address() returned error: {1}".format(url, result.status))
+            print("{0}: getdns.address() returned error: {1}".format(url, results.status))
 
         lookup_result["IPv4"] = ipv4_list
         lookup_result["IPv6"] = ipv6_list
