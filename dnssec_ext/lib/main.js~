@@ -13,21 +13,17 @@ var button = buttons.ActionButton({
     "32": "./icon-32.png",
     "64": "./icon-64.png"
   },
-  onClick: handleClick
+  onClick: test_validate
 });
 
-function handleClick(state) {
-  console.log(httpGet(data.url('bin/test.py')));
-  var ls = child_process.spawn('/usr/bin/python' , ['/home/corrupted/Projects/firefox_ext/addon-sdk-1.17/dnssec_ext/data/bin/test.py']);
-  ls.stdout.on('data', function (data) {
-    console.log('stdout: ' + data);
+function validate(url, callback) {
+  var py_validate = child_process.spawn('/usr/bin/python' , ['/home/corrupted/Projects/firefox_ext/addon-sdk-1.17/dnssec_ext/data/bin/main.py', '-v', url]);
+  py_validate.stdout.on('data', function (data) {
+    console.log(data);
+    callback(JSON.parse(data));
   });
+}
 
-  ls.stderr.on('data', function (data) {
-    console.log('stderr: ' + data);
-  });
-
-  ls.on('close', function (code) {
-    console.log('child process exited with code ' + code);
-  });
+function test_validate(state) {
+    validate('test.com',console.log);
 }
