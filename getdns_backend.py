@@ -1,14 +1,6 @@
 #!/usr/bin/env python
 
-import getdns
-
-"""
-Below module can't be loaded:
-    swig        installed   3.0.5
-    M2Crypto    installed   0.22.3
-"""
-# import M2Crypto as m2
-# from M2Crypto import RSA
+import getdns, base64, binascii
 
 def getdns_version():
     return getdns.__version__
@@ -76,7 +68,7 @@ def getdns_dnssec_validate(hostname):
     else:
         return False
 
-def lookup(url):
+def lookup(url,protocol=None,port=None):
 
     lookup_result={"url":url}
 
@@ -147,11 +139,18 @@ def main():
         result.append(lookup(url))
 
     for node in result:
-        print(node.get("url"), node.get("dnssec_status"))
+        print(node)
 
-def getdns_tlsa_record(hostname=None):
-
+def getdns_tlsa_record(hostname, protocol="tcp", port=443):
+    """
     qname = "_443._tcp.fedoraproject.org"
+
+    This qname is for testing to match TLSA record, should be like this:
+    _443._tcp.fedoraproject.org. 300 IN	TLSA	0 0 1 19400BE5B7A31FB733917700789D2F0A2471C0C9D506C0E504C06C16 D7CB17C0
+
+    """
+
+    qname = "_{0}._{1}.{2}".format(str(int(port)), str(protocol), str(hostname))
     qtype = getdns.RRTYPE_TLSA
 
     ctx = getdns.Context()
@@ -166,14 +165,25 @@ def getdns_tlsa_record(hostname=None):
         extensions = extensions
     )
 
-    print(dir(results))
+    # print(dir(results))
+    # print("\n")
+
+    replies_tree = results.replies_tree
+    for a in replies_tree:
+        for b in a.get("answer"):
+            d = b.get("rdata")
+            if d:
+                cdata = d.get("certificate_association_data")
+                if cdata:
+                    print(binascii.b2a_hex(cdata))
 
     if results.status == getdns.RESPSTATUS_GOOD:
-        print(results.replies_tree)
+        # print(results.replies_tree)
+        pass
 
 if __name__ == "__main__":
     print("getdns version:"+getdns_version()+"\n")
-    main()
+    getdns_tlsa_record("fedoraproject.org", "tcp", 443)
 
 
 
