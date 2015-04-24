@@ -68,7 +68,7 @@ var anchorMod = pageMod.PageMod({
   contentScriptFile: "./anchor-mod.js",
   contentScriptWhen: "start",
   contentScriptOptions: {
-    iconUrls: iconUrls
+    iconsUrls: iconsUrls
   },
   contentStyleFile: "./anchor-mod.css",
   onAttach: function(worker) {
@@ -88,6 +88,10 @@ var anchorMod = pageMod.PageMod({
           });
       }
     });
+
+    worker.port.on("redirect", function(data) {
+      tabs.activeTab.url = data.url("caution.html");
+    }
   }
 });
 

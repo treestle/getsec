@@ -67,6 +67,9 @@ var anchorMod = pageMod.PageMod({
   include: ['*'],
   contentScriptFile: "./anchor-mod.js",
   contentScriptWhen: "start",
+  contentScriptOptions: {
+    iconsUrls: iconsUrls
+  },
   contentStyleFile: "./anchor-mod.css",
   onAttach: function(worker) {
     worker.port.on("validate", function(data) {

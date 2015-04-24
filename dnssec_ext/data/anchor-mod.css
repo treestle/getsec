@@ -6,11 +6,10 @@
   
 }
 
-.getsec-icon div {
+.getsec-icon img {
   width: 15px;
   height: 15px;
   position: absolute;
-  border-radius: 999px;
 }
 
 .getsec-icon .getsec-icon-2 {

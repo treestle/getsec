@@ -29,5 +29,5 @@ document.addEventListener("mouseover", function(event) {
 self.port.on("enhance", function(data) {
       console.log("ENHANCE: " + data.id);
       var tag = document.getElementById(data.id);
-      tag.innerHTML += '<div class="getsec-icon-' + data.status + '"></div>';
+      tag.appendChild(icons[data.status]);
 });
