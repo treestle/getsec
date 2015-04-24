@@ -29,5 +29,14 @@ document.addEventListener("mouseover", function(event) {
 self.port.on("enhance", function(data) {
       console.log("ENHANCE: " + data.id);
       var tag = document.getElementById(data.id);
+      tag.parent.onclick = function(event) {
+        if(data.status == 0) {
+          event.preventDefault();
+          self.port.emit("redirect", {
+            origin: document.URL,
+            destination: tag.parentElement.href
+          });
+        }
+      };
       tag.appendChild(icons[data.status]);
 });

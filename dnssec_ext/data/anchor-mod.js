@@ -29,7 +29,7 @@ document.addEventListener("mouseover", function(event) {
 self.port.on("enhance", function(data) {
       console.log("ENHANCE: " + data.id);
       var tag = document.getElementById(data.id);
-      tag.onclick = function(event) {
+      tag.parentElement.onclick = function(event) {
         if(data.status == 0) {
           event.preventDefault();
           self.port.emit("redirect", {
