@@ -90,8 +90,13 @@ var anchorMod = pageMod.PageMod({
     });
 
     worker.port.on("redirect", function(data) {
-      tabs.activeTab.url = data.url("caution.html");
-    }
+      var tab = tabs.activeTab;
+      tab.url = data.url("caution.html");
+      tab.attach({
+        contentScript: 'document.getElementById("back-link").href="' + data.origin + '";' +
+                       'document.getElementById("proceed-link").href="' + data.destination + '";'
+      });
+    });
   }
 });
 

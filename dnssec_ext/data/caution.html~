@@ -37,7 +37,7 @@
 		    padding-bottom: 15px; 
 		    margin-left: auto;
 		    margin-right: auto;
-		    width: 600px;
+		    width: 650px;
 		}
 	</style>
 	</head>
@@ -55,7 +55,7 @@
 				For more information see <a href="http://www.dnssec-failed.org/">http://www.dnssec-failed.org/</a><br>
 				<button>Go back</button>
 				<br><br><br>
-				<a>I know the risks proceed anyway</a>.
+				<a href="" id="proceed-link">I know the risks proceed anyway</a>.
 			</artice>
 		</section>
 		</div>

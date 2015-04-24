@@ -88,6 +88,10 @@ var anchorMod = pageMod.PageMod({
           });
       }
     });
+
+    worker.port.on("redirect", function(data) {
+      tabs.activeTab.url = data.url("caution.html");
+    });
   }
 });
 
