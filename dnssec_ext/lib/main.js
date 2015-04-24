@@ -64,12 +64,19 @@ var anchorMod = pageMod.PageMod({
   onAttach: function(worker) {
     worker.port.on("validate", function(data) {
       console.log("RECEIVE: " + data.url);
-      validate(data.url, function() {
+      if (data.url.charAt(0) == "/") {
         worker.port.emit("enhance", {
           id: data.id,
           status: status
         });
-      });
+      } else {
+          validate(data.url, function(obj) {
+            worker.port.emit("enhance", {
+              id: data.id,
+              status: obj["dnssec_status"]
+            });
+          });
+      }
     });
   }
 });
@@ -84,7 +91,7 @@ function onTabReady(tab) {
 }
 
 function tab_ready_callback(data) {
-  var status = Math.floor(data["dnssec_status"]);
+  status = Math.floor(data["dnssec_status"]);
   console.log(data["dnssec_status"]);
   switch(status) {
     case 0:

@@ -69,7 +69,7 @@ def getdns_dnssec_validate(hostname):
     elif validate_result in [402,403]:
         return 1
     else:
-        return False
+        return 0
 
 def getdns_tlsa_record(hostname, protocol="tcp", port=443):
     """
@@ -155,7 +155,9 @@ def lookup(url,protocol=None,port=None):
         }
 
         for result in results.replies_tree:
-            dnssec_result.append(result_status[result.get("dnssec_status")])
+            key = result.get("dnssec_status")
+            if key in result_status.keys() and results.status != 901:
+                dnssec_result.append(result_status[key])
 
         avg_result = float(sum(dnssec_result))/(float(len(dnssec_result)) or 1.0)
 
