@@ -4,6 +4,7 @@ var tabs = require("sdk/tabs");
 var sidebars = require("sdk/ui/sidebar");
 var pageMod = require("sdk/page-mod");
 var child_process = require("sdk/system/child_process");
+var data = require("sdk/self").data;
 var status = 1;
 
 const icons = {
@@ -23,6 +24,12 @@ const icons = {
       "64": "./ugly-64.png"
     }
 };
+
+const iconsUrls = [
+  data.url("ugly-64.png"),
+  data.url("bad-64.png"),
+  data.url("good-64.png")
+];
 
 tabs.on('activate', onTabReady);
 tabs.on('pageshow', onTabReady);
@@ -60,6 +67,9 @@ var anchorMod = pageMod.PageMod({
   include: ['*'],
   contentScriptFile: "./anchor-mod.js",
   contentScriptWhen: "start",
+  contentScriptOptions: {
+    iconUrls: iconUrls
+  },
   contentStyleFile: "./anchor-mod.css",
   onAttach: function(worker) {
     worker.port.on("validate", function(data) {

@@ -1,5 +1,12 @@
 console.log("SCRIPT");
-const icons = ["./good-16.png","./bad-16.png","./ugly-16.png"];
+const icons = [
+  document.createElement("img"),
+  document.createElement("img"),
+  document.createElement("img")
+];
+for(var i=0; i<icons.length; i++) {
+  icons[i].src = self.options.iconsUrls[i];
+}
 var currentId = 0;
 
 document.addEventListener("mouseover", function(event) {
@@ -22,5 +29,5 @@ document.addEventListener("mouseover", function(event) {
 self.port.on("enhance", function(data) {
       console.log("ENHANCE: " + data.id);
       var tag = document.getElementById(data.id);
-      tag.innerHTML += '<div class="getsec-icon-' + data.status + '"></div>';
+      tag.appendChild(icons[data.status]);
 });

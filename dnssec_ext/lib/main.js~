@@ -4,6 +4,7 @@ var tabs = require("sdk/tabs");
 var sidebars = require("sdk/ui/sidebar");
 var pageMod = require("sdk/page-mod");
 var child_process = require("sdk/system/child_process");
+var data = require("sdk/self").data;
 var status = 1;
 
 const icons = {
@@ -23,6 +24,12 @@ const icons = {
       "64": "./ugly-64.png"
     }
 };
+
+const iconsUrls = [
+  data.url("ugly-64.png"),
+  data.url("bad-64.png"),
+  data.url("good-64.png")
+];
 
 tabs.on('activate', onTabReady);
 tabs.on('pageshow', onTabReady);
@@ -64,17 +71,19 @@ var anchorMod = pageMod.PageMod({
   onAttach: function(worker) {
     worker.port.on("validate", function(data) {
       console.log("RECEIVE: " + data.url);
-      if (data.url.charAt(0) == "/")
+      if (data.url.charAt(0) == "/") {
         worker.port.emit("enhance", {
           id: data.id,
           status: status
         });
-      validate(data.url, function(obj) {
-        worker.port.emit("enhance", {
-          id: data.id,
-          status: obj["dnssec_status"]
-        });
-      });
+      } else {
+          validate(data.url, function(obj) {
+            worker.port.emit("enhance", {
+              id: data.id,
+              status: obj["dnssec_status"]
+            });
+          });
+      }
     });
   }
 });

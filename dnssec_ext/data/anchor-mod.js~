@@ -1,5 +1,12 @@
 console.log("SCRIPT");
-const icons = ["./good-16.png","./bad-16.png","./ugly-16.png"];
+const icons = [
+  document.createElement("img"),
+  document.createElement("img"),
+  document.createElement("img")
+];
+for(var i=0; i<icons.length; i++) {
+  icons[i].src = self.options.iconsUrls[i];
+}
 var currentId = 0;
 
 document.addEventListener("mouseover", function(event) {
@@ -9,8 +16,6 @@ document.addEventListener("mouseover", function(event) {
       var id = "getsec-icon-" + ++currentId;
       t.innerHTML += '<div class="getsec-icon" id="' + id + '"></div>';
       url = t.getAttribute("href")
-      if (url.charAt(0) == "/")
-        url = "";
 
       self.port.emit("validate", {
         url: url,
