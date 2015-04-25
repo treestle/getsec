@@ -72,29 +72,29 @@ var anchorMod = pageMod.PageMod({
   },
   contentStyleFile: "./anchor-mod.css",
   onAttach: function(worker) {
-    worker.port.on("validate", function(data) {
-      console.log("RECEIVE: " + data.url);
-      if (data.url.charAt(0) == "/") {
+    worker.port.on("validate", function(d) {
+      console.log("RECEIVE: " + d.url);
+      if (d.url.charAt(0) == "/") {
         worker.port.emit("enhance", {
-          id: data.id,
+          id: d.id,
           status: status
         });
       } else {
-          validate(data.url, function(obj) {
+          validate(d.url, function(obj) {
             worker.port.emit("enhance", {
-              id: data.id,
+              id: d.id,
               status: obj["dnssec_status"]
             });
           });
       }
     });
 
-    worker.port.on("redirect", function(data) {
+    worker.port.on("redirect", function(d) {
       var tab = tabs.activeTab;
       tab.url = data.url("caution.html");
       tab.attach({
-        contentScript: 'document.getElementById("back-link").href="' + data.origin + '";' +
-                       'document.getElementById("proceed-link").href="' + data.destination + '";'
+        contentScript: 'document.getElementById("back-link").href="' + d.origin + '";' +
+                       'document.getElementById("proceed-link").href="' + d.destination + '";'
       });
     });
   }
