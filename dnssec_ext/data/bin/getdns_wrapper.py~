@@ -156,7 +156,7 @@ def lookup(url,protocol=None,port=None):
 
         for result in results.replies_tree:
             key = result.get("dnssec_status")
-            if key in result_status.keys() and results.status != 901:
+            if key in result_status.keys() or results.status == 901:
                 dnssec_result.append(result_status[key])
 
         avg_result = float(sum(dnssec_result))/(float(len(dnssec_result)) or 1.0)

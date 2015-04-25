@@ -4,6 +4,7 @@ var tabs = require("sdk/tabs");
 var sidebars = require("sdk/ui/sidebar");
 var pageMod = require("sdk/page-mod");
 var child_process = require("sdk/system/child_process");
+var data = require("sdk/self").data;
 var status = 1;
 
 const icons = {
@@ -23,6 +24,12 @@ const icons = {
       "64": "./ugly-64.png"
     }
 };
+
+const iconsUrls = [
+  data.url("ugly-64.png"),
+  data.url("bad-64.png"),
+  data.url("good-64.png")
+];
 
 tabs.on('activate', onTabReady);
 tabs.on('pageshow', onTabReady);
@@ -60,15 +67,34 @@ var anchorMod = pageMod.PageMod({
   include: ['*'],
   contentScriptFile: "./anchor-mod.js",
   contentScriptWhen: "start",
+  contentScriptOptions: {
+    iconsUrls: iconsUrls
+  },
   contentStyleFile: "./anchor-mod.css",
   onAttach: function(worker) {
     worker.port.on("validate", function(data) {
       console.log("RECEIVE: " + data.url);
-      validate(data.url, function() {
+      if (data.url.charAt(0) == "/") {
         worker.port.emit("enhance", {
           id: data.id,
           status: status
         });
+      } else {
+          validate(data.url, function(obj) {
+            worker.port.emit("enhance", {
+              id: data.id,
+              status: obj["dnssec_status"]
+            });
+          });
+      }
+    });
+
+    worker.port.on("redirect", function(data) {
+      var tab = tabs.activeTab;
+      tab.url = data.url("caution.html");
+      tab.attach({
+        contentScript: 'document.getElementById("back-link").href="' + data.origin + '";' +
+                       'document.getElementById("proceed-link").href="' + data.destination + '";'
       });
     });
   }
@@ -84,7 +110,7 @@ function onTabReady(tab) {
 }
 
 function tab_ready_callback(data) {
-  var status = Math.floor(data["dnssec_status"]);
+  status = Math.floor(data["dnssec_status"]);
   console.log(data["dnssec_status"]);
   switch(status) {
     case 0:

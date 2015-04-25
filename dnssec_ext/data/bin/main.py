@@ -16,8 +16,8 @@ def main(argv):
         elif opt in ("-v", "--validate"):
             func = 'validate'
             url = arg
-            url = url.strip("http://")
-            url = url.strip("https://")
+            url = url.replace("http://","")
+            url = url.replace("https://", "")
             url = url.split("/")[0]
     print json.dumps(getdns_wrapper.lookup(url))
 
