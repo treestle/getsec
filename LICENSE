@@ -3,6 +3,14 @@ under the MPL 2.0 (http://mozilla.org/MPL/2.0/), with the exception of the
 components listed below, which are made available by their authors under
 the licenses listed alongside.
 
+GetSec
+------
+All files under the getsec directory are under the 3-clause BSD license.
+
+getdns-python-bindings
+----------------------
+are under the license found in the relevent folder.
+
 syntaxhighlighter
 ------------------
 doc/static-files/syntaxhighlighter
