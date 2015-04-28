@@ -1,38 +1,10 @@
-The files which make up the SDK are developed by Mozilla and licensed
-under the MPL 2.0 (http://mozilla.org/MPL/2.0/), with the exception of the
-components listed below, which are made available by their authors under
-the licenses listed alongside.
+Copyright (c) 2015, GetSec (N. Chinellato, W. Pai, T. Armstrong)
+All rights reserved.
 
-GetSec
-------
-All files under the getsec directory are under the 3-clause BSD license.
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-getdns-python-bindings
-----------------------
-are under the license found in the relevent folder.
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 
-syntaxhighlighter
-------------------
-doc/static-files/syntaxhighlighter
-Made available under the MIT license.
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 
-jQuery
-------
-examples/reddit-panel/data/jquery-1.4.4.min.js
-examples/annotator/data/jquery-1.4.2.min.js
-Made available under the MIT license.
-
-simplejson
-----------
-python-lib/simplejson
-Made available under the MIT license.
-
-Python Markdown
----------------
-python-lib/markdown
-Made available under the BSD license.
-
-LibraryDetector
----------------
-examples/library-detector/data/library-detector.js
-Made available under the MIT license.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
